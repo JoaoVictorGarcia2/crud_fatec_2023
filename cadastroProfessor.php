@@ -6,7 +6,7 @@ $received_data = json_decode(file_get_contents("php://input"));
 $data = array();
 if ($received_data->action == 'fetchall') {
     $query = "
- SELECT * FROM fatec_alunos 
+ SELECT * FROM FATEC_PROFESSORES 
  ORDER BY id DESC
  ";
     $statement = $connect->prepare($query);
@@ -18,14 +18,16 @@ if ($received_data->action == 'fetchall') {
 }
 if ($received_data->action == 'insert') {
     $data = array(
-        ':first_name' => $received_data->firstName,
-        ':last_name' => $received_data->lastName
+        ':Nome' => $received_data->Nome,
+        ':Endereco' => $received_data->Endereco,
+        ':Curso' => $received_data->Curso,
+        ':Salario' => $received_data->Salario
     );
 
     $query = "
- INSERT INTO fatec_alunos 
- (first_name, last_name) 
- VALUES (:first_name, :last_name)
+ INSERT INTO FATEC_PROFESSORES  
+ (Nome, Endereco, Curso, Salario) 
+ VALUES (:Nome, :Endereco, :Curso, :Salario)
  ";
 
     $statement = $connect->prepare($query);
@@ -33,14 +35,14 @@ if ($received_data->action == 'insert') {
     $statement->execute($data);
 
     $output = array(
-        'message' => 'Aluno Adicionado'
+        'message' => 'Professor Adicionado'
     );
 
     echo json_encode($output);
 }
 if ($received_data->action == 'fetchSingle') {
     $query = "
- SELECT * FROM fatec_alunos 
+ SELECT * FROM FATEC_PROFESSORES 
  WHERE id = '" . $received_data->id . "'
  ";
 
@@ -52,23 +54,29 @@ if ($received_data->action == 'fetchSingle') {
 
     foreach ($result as $row) {
         $data['id'] = $row['id'];
-        $data['first_name'] = $row['first_name'];
-        $data['last_name'] = $row['last_name'];
+        $data['Nome'] = $row['Nome'];
+        $data['Endereco'] = $row['Endereco'];
+        $data['Curso'] = $row['Curso'];
+        $data['Salario'] = $row['Salario'];
     }
 
     echo json_encode($data);
 }
 if ($received_data->action == 'update') {
     $data = array(
-        ':first_name' => $received_data->firstName,
-        ':last_name' => $received_data->lastName,
+        ':Nome' => $received_data->Nome,
+        ':Endereco' => $received_data->Endereco,
+        ':Curso' => $received_data->Curso,
+        ':Salario' => $received_data->Salario,
         ':id' => $received_data->hiddenId
     );
 
     $query = "
- UPDATE fatec_alunos 
- SET first_name = :first_name, 
- last_name = :last_name 
+ UPDATE FATEC_PROFESSORES  
+ SET Nome = :Nome, 
+ Endereco = :Endereco,
+ Curso = :Curso ,
+ Salario = :Salario
  WHERE id = :id
  ";
 
@@ -77,7 +85,7 @@ if ($received_data->action == 'update') {
     $statement->execute($data);
 
     $output = array(
-        'message' => 'Aluno Atualizado'
+        'message' => 'Professor Atualizado'
     );
 
     echo json_encode($output);
@@ -85,7 +93,7 @@ if ($received_data->action == 'update') {
 
 if ($received_data->action == 'delete') {
     $query = "
- DELETE FROM fatec_alunos 
+ DELETE FROM FATEC_PROFESSORES  
  WHERE id = '" . $received_data->id . "'
  ";
 
@@ -94,7 +102,7 @@ if ($received_data->action == 'delete') {
     $statement->execute();
 
     $output = array(
-        'message' => 'Aluno Deletado'
+        'message' => 'Professor Deletado'
     );
 
     echo json_encode($output);
